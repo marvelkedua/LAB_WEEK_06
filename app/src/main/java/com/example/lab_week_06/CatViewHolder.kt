@@ -4,14 +4,22 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.lab_week_06.model.CatBreed // Imports your CatBreed enum
-import com.example.lab_week_06.model.CatModel  // Imports your CatModel data class
-import com.example.lab_week_06.model.Gender    // Imports your Gender enum
+import com.example.lab_week_06.model.CatBreed
+import com.example.lab_week_06.model.CatModel
+import com.example.lab_week_06.model.Gender
+
+// DELETE this incorrect import: import android.content.DialogInterface.OnClickListener
+
 private val FEMALE_SYMBOL = "\u2640"
 private val MALE_SYMBOL = "\u2642"
 private const val UNKNOWN_SYMBOL = "?"
-class CatViewHolder(containerView: View, private val imageLoader:
-ImageLoader) : RecyclerView.ViewHolder(containerView) {
+
+// CHANGE the constructor to use CatAdapter.OnClickListener
+class CatViewHolder(
+    private val containerView: View,
+    private val imageLoader: ImageLoader,
+    private val onClickListener: CatAdapter.OnClickListener
+) : RecyclerView.ViewHolder(containerView) {
 
     private val catBiographyView: TextView by lazy {
         containerView.findViewById(R.id.cat_biography) }
@@ -23,15 +31,18 @@ ImageLoader) : RecyclerView.ViewHolder(containerView) {
         containerView.findViewById(R.id.cat_name) }
     private val catPhotoView: ImageView by lazy {
         containerView.findViewById(R.id.cat_photo) }
-    //This function is called in the adapter to provide the binding function
+
     fun bindData(cat: CatModel) {
+        containerView.setOnClickListener {
+            // This now correctly calls the method from CatAdapter's interface
+            onClickListener.onItemClick(cat)
+        }
         imageLoader.loadImage(cat.imageUrl, catPhotoView)
         catNameView.text = cat.name
         catBreedView.text = when (cat.breed) {
             CatBreed.AmericanCurl -> "American Curl"
             CatBreed.BalineseJavanese -> "Balinese-Javanese"
             CatBreed.ExoticShorthair -> "Exotic Shorthair"
-            else -> "Unknown"
         }
         catBiographyView.text = cat.biography
         catGenderView.text = when (cat.gender) {
@@ -40,4 +51,6 @@ ImageLoader) : RecyclerView.ViewHolder(containerView) {
             else -> UNKNOWN_SYMBOL
         }
     }
+
+    // DELETE the OnClickListener interface that was previously here.
 }
