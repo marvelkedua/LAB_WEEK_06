@@ -1,16 +1,15 @@
 package com.example.lab_week_06
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.ItemTouchHelper // <-- ADD THIS IMPORT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lab_week_06.model.CatBreed
 import com.example.lab_week_06.model.CatModel
 import com.example.lab_week_06.model.Gender
-import androidx.appcompat.app.AlertDialog
+
 
 class MainActivity : AppCompatActivity() {
     private val recyclerView: RecyclerView by lazy {
@@ -35,6 +34,12 @@ class MainActivity : AppCompatActivity() {
 //For this tutorial, we're using the vertical linear structure
         recyclerView.layoutManager = LinearLayoutManager(this,
             LinearLayoutManager.VERTICAL, false)
+
+        //Instantiate ItemTouchHelper for the swipe to delete callback and
+        //attach it to the recycler view [cite: 607]
+        val itemTouchHelper = ItemTouchHelper(catAdapter.swipeToDeleteCallback) // [cite: 608]
+        itemTouchHelper.attachToRecyclerView(recyclerView) // [cite: 608]
+
 //Add data to the model list in the adapter
         catAdapter.setData(
             listOf(
